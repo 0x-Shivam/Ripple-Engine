@@ -85,4 +85,16 @@ class ButterflyPredictionEngine:
                 
                 return predictions
             
+            #lcal verifcation test 
+
+            if __name__ == "__main__":
+                engine = ButterflyPredictionEngine ()
+                results = engine.calculate_predictions("Proposed_Metro_Hub", scale_factor=1.0)
+
+
+                print ("\n --- THE BUTTERFLY ENGINE PREDICTION RUN ---")
+                for metric, calculation in results.items():
+                    print(f"🔹 {metric.replace('_', ' ')}: {calculation}")
+
+                    
             
