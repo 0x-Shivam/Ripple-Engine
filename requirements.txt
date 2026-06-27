@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+requests
+python-dotenv
+networkx
+numpy 
+
+## to insall all of these 
+
+# pip install -r requirements.txt
