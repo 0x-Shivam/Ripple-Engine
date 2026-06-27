@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butterfly Engine - Control Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f7f6f2; }
+        .glass-panel { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden text-[#1e2926] p-4 flex gap-4">
+
+    <aside class="w-64 glass-panel rounded-3xl p-6 flex flex-col justify-between shadow-sm">
+        <div>
+            <div class="flex items-center gap-2 mb-8">
+                <div class="w-8 h-8 bg-[#1e3930] rounded-lg flex items-center justify-center text-white font-bold">B</div>
+                <h1 class="text-xl font-bold tracking-tight text-[#1e3930]">Butterfly<br><span class="text-sm font-normal text-gray-500">Engine</span></h1>
+            </div>
+            <nav class="space-y-2">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#1e3930] text-white font-medium shadow-sm transition">
+                    <span></span> Dashboard
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-white/50 transition">
+                    <span></span> Map Canvas
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-white/50 transition">
+                    <span></span> AI Advisor
+                </a>
+            </nav>
+        </div>
+        
+        <div class="flex items-center gap-3 border-t border-gray-200/60 pt-4">
+            <div class="w-10 h-10 bg-[#e3e1da] rounded-full flex items-center justify-center font-bold text-[#1e3930]">SY</div>
+            <div>
+                <p class="font-semibold text-sm">Sattyam Yadav</p>
+                <p class="text-xs text-gray-500">Urban Planner</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col gap-4">
+        <header class="h-16 glass-panel rounded-2xl px-6 flex items-center justify-between shadow-sm">
+            <div class="text-sm text-gray-500">Current Simulation: <span class="font-semibold text-[#1e3930]">New Harmony City Grid</span></div>
+            <div class="bg-[#1e3930]/5 text-[#1e3930] px-4 py-1.5 rounded-full text-xs font-semibold">● Engine Online</div>
+        </header>
+
+        <div class="flex-1 glass-panel rounded-3xl overflow-hidden relative shadow-inner flex items-center justify-center bg-[#e5e3db]">
+            <div class="text-center text-gray-400 select-none z-10">
+                <p class="text-lg font-medium text-gray-600">Digital Twin Map Canvas Active</p>
+                <p class="text-xs max-w-sm mt-1">Intervention node placed at Greenfield District center coordinates.</p>
+            </div>
+            
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="absolute w-40 h-40 border-2 border-orange-400/40 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+                <div class="absolute w-80 h-80 border border-orange-400/20 rounded-full animate-ping" style="animation-duration: 4s;"></div>
+            </div>
+        </div>
+
+        <footer class="h-28 glass-panel rounded-3xl p-6 flex flex-col justify-center shadow-sm">
+            <div class="flex justify-between items-center mb-2">
+                <label class="text-sm font-semibold text-gray-700">Explore Future Impact Timeline</label>
+                <span id="yearDisplay" class="bg-[#1e3930] text-white text-xs font-bold px-3 py-1 rounded-full">Target Year: 2035</span>
+            </div>
+            <input id="timelineSlider" type="range" min="2025" max="2050" step="5" value="2035" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1e3930]">
+            <div class="flex justify-between text-xs text-gray-400 mt-2 px-1">
+                <span>2025</span><span>2030</span><span>2035</span><span>2040</span><span>2045</span><span>2050</span>
+            </div>
+        </footer>
+    </main>
+
+    <section class="w-96 glass-panel rounded-3xl p-6 flex flex-col justify-between shadow-sm overflow-y-auto">
+        <div>
+            <h3 class="text-lg font-bold text-[#1e3930] mb-4">Downstream Ripple Effects</h3>
+            
+            <div class="space-y-3" id="metricsContainer">
+                <div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Mobility Optimization</p>
+                        <h4 class="font-bold text-gray-700">Traffic Flow Change</h4>
+                    </div>
+                    <span id="metric-Traffic_Flow" class="text-xl font-bold text-emerald-600">--</span>
+                </div>
+                
+                <div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Environment Protection</p>
+                        <h4 class="font-bold text-gray-700">Air Quality Index</h4>
+                    </div>
+                    <span id="metric-Air_Quality" class="text-xl font-bold text-emerald-600">--</span>
+                </div>
+
+                <div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Economic Vitality</p>
+                        <h4 class="font-bold text-gray-700">New Opportunities Created</h4>
+                    </div>
+                    <span id="metric-Jobs_Created" class="text-xl font-bold text-blue-600">--</span>
+                </div>
+
+                <div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Climate Resilience</p>
+                        <h4 class="font-bold text-gray-700">Surface Flood Risk Delta</h4>
+                    </div>
+                    <span id="metric-Flood_Risk" class="text-xl font-bold text-gray-700">--</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="triggerSimulation()" class="w-full bg-[#1e3930] text-white font-semibold py-4 rounded-2xl shadow-md hover:bg-[#152822] active:scale-[0.98] transition-all mt-4">
+             Compute Active Scenario
+        </button>
+    </section>
+
+    <script>
+        const BACKEND_URL = "http://127.0.0.1:5001/api/simulate";
+        const timelineSlider = document.getElementById("timelineSlider");
+        const yearDisplay = document.getElementById("yearDisplay");
+
+        timelineSlider.addEventListener("input", (e) => {
+            const selectedYear = e.target.value;
+            yearDisplay.innerText = `Target Year: ${selectedYear}`;
+            /// Fetch fresh predictions instantly as the slider slides!
+            fetchSimulationData("Proposed_Metro_Hub", selectedYear);
+        });
+
+        // Core Async Function to fetch math data from Flask App
+
+        
+        async function fetchSimulationData(project, year) {
+            try {
+                const response = await fetch(`${BACKEND_URL}?project=${project}&year=${year}`);
+                if (!response.ok) throw new Error("Network latency or server error");
+                
+                const responsePayload = await response.json();
+                if (responsePayload.status === "success") {
+                    updateMetricsUI(responsePayload.data);
+                }
+            } catch (error) {
+                console.error(" Failed to stream telemetry data from engine:", error);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
