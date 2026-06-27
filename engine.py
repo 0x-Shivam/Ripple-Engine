@@ -1,3 +1,4 @@
+print("Loading Butterfly Prediction Engine Core.")
 import networkx as nx
 import random
 
@@ -79,22 +80,18 @@ class ButterflyPredictionEngine:
                 if node_data.get("base_unit") == "count":
                     predictions[metric] = f"+{int(raw_calculated_value)}"
                 else: 
-                    predictions = int(raw_calculated_value * 100)
+                    percentage = int(raw_calculated_value * 100)
                     sign = "+" if percentage > 0 else ""
                     predictions[metric] = f"{sign}{percentage}%"
                 
                 return predictions
             
-            #lcal verifcation test 
-
-            if __name__ == "__main__":
-                engine = ButterflyPredictionEngine ()
-                results = engine.calculate_predictions("Proposed_Metro_Hub", scale_factor=1.0)
-
-
-                print ("\n --- THE BUTTERFLY ENGINE PREDICTION RUN ---")
-                for metric, calculation in results.items():
-                    print(f"🔹 {metric.replace('_', ' ')}: {calculation}")
-
-                    
-            
+            #lcal verifcation test
+if __name__ == "__main__":
+    print(" Running local verification test...")
+    engine = ButterflyPredictionEngine()
+    results = engine.calculate_predictions("Proposed_Metro_Hub", scale_factor=1.0)
+    
+    print("\n --- THE BUTTERFLY ENGINE PREDICTION RUN --- ")
+    for metric, calculation in results.items(): # type: ignore
+        print(f" {metric.replace('_', ' ')}: {calculation}")
