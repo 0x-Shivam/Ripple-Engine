@@ -70,4 +70,19 @@ class ButterflyPredictionEngine:
                 edge_data = self.graph.get_edge_data(sector, metric)
                 coefficient = edge_data.get("coefficient", 0.1)
                 
-                vari
+                variance = random.uniform(0.95, 1.05)
+                raw_calculated_value = coefficient * scale_factor * variance
+
+
+                # Format output nicely
+                node_data = self.graph.nodes[metric]
+                if node_data.get("base_unit") == "count":
+                    predictions[metric] = f"+{int(raw_calculated_value)}"
+                else: 
+                    predictions = int(raw_calculated_value * 100)
+                    sign = "+" if percentage > 0 else ""
+                    predictions[metric] = f"{sign}{percentage}%"
+                
+                return predictions
+            
+            
