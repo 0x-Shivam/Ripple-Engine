@@ -55,7 +55,7 @@ def fetch_aqi(lat="26.8467", lon="80.9462"):
     
 
     try:
-        url = f"https://api.waqi.info/feed/geo:{lat};{lon}/?token={WAQI_API_KEY}"
+        url = f"https://api.waqi.info/feed/lucknow/?token={WAQI_API_KEY}"
         response = requests.get(url, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
         res_json = response.json()
