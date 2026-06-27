@@ -108,6 +108,29 @@
                     <span id="metric-Flood_Risk" class="text-xl font-bold text-gray-700">--</span>
                 </div>
             </div>
+            <div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+    <div>
+        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Urban Assets</p>
+        <h4 class="font-bold text-gray-700">Property Value Growth</h4>
+    </div>
+    <span id="metric-Property_Value" class="text-xl font-bold text-emerald-600">--</span>
+</div>
+
+<div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+    <div>
+        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Acoustic Mapping</p>
+        <h4 class="font-bold text-gray-700">Ambient Noise Level</h4>
+    </div>
+    <span id="metric-Noise_Level" class="text-xl font-bold text-gray-700">--</span>
+</div>
+
+<div class="bg-white/80 p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+    <div>
+        <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Eco Preservation</p>
+        <h4 class="font-bold text-gray-700">Green Canopy Cover</h4>
+    </div>
+    <span id="metric-Green_Spaces" class="text-xl font-bold text-emerald-600">--</span>
+</div>
         </div>
 
         <button onclick="triggerSimulation()" class="w-full bg-[#1e3930] text-white font-semibold py-4 rounded-2xl shadow-md hover:bg-[#152822] active:scale-[0.98] transition-all mt-4">
@@ -129,7 +152,7 @@
 
         // Core Async Function to fetch math data from Flask App
 
-        
+
         async function fetchSimulationData(project, year) {
             try {
                 const response = await fetch(`${BACKEND_URL}?project=${project}&year=${year}`);
@@ -143,6 +166,44 @@
                 console.error(" Failed to stream telemetry data from engine:", error);
             }
         }
+
+        function updateMetricsUI(data) {
+            
+            const updateCard = (elementId, value) => {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                
+                el.innerText = value;
+                
+                
+                if (value.includes("-")) {
+                    el.className = "text-xl font-bold text-rose-600"; 
+                } else if (value.includes("+")) {
+                    if (elementId.includes("Traffic")) {
+                        el.className = "text-xl font-bold text-amber-600"; // Traffic growth warning
+                    } else {
+                        el.className = "text-xl font-bold text-emerald-600"; 
+                    }
+                }
+            };
+
+            
+            updateCard("metric-Traffic_Flow", data.Traffic_Flow || "--");
+            updateCard("metric-Air_Quality", data.Air_Quality || "--");
+            updateCard("metric-Jobs_Created", data.Jobs_Created || "--");
+            updateCard("metric-Flood_Risk", data.Flood_Risk || "--");
+            updateCard("metric-Property_Value", data.Property_Value || "--");
+            updateCard("metric-Noise_Level", data.Noise_Level || "--");
+            updateCard("metric-Green_Spaces", data.Green_Spaces || "--");
+        }
+
+        
+        function triggerSimulation() {
+            fetchSimulationData("Proposed_Metro_Hub", timelineSlider.value);
+        }
+
+       
+        window.onload = triggerSimulation;
 
 
     </script>
