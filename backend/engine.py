@@ -52,7 +52,7 @@ class UrbanCascadeEngine:
             - Commercial_Heavy (malls, towers, factories, commerce)
             - Transit_Hub (roads, metro, transport, vehicles)
             - Green_Ecology (parks, planting trees, environmental)
-            - Utility_Underground (water pipes, sewers, electrical grids)
+            - - Utility_Underground (water pipes, sewers, electrical grids, internet, 5G towers, telecom)
             - Neutral_Development (if vague, unknown, or unrelated)
             
             Return ONLY the exact category name string. No markdown, no punctuation, no explanation.
