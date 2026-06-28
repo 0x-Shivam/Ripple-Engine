@@ -42,7 +42,7 @@ app.state.limiter = limiter
 # In production, set ALLOWED_ORIGINS to your actual domain.
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
-    "http://localhost:5500,http://127.0.0.1:5500,http://localhost:8000,http://127.0.0.1:8000,null"
+    "http://localhost:5500,http://127.0.0.1:5500,http://localhost:8000,http://127.0.0.1:8000,null,https://ripple-engine-production.up.railway.app:8080"
 ).split(",")
 app.add_middleware(
     CORSMiddleware,
@@ -189,5 +189,6 @@ async def simulate_urban_cascade(
 
 if __name__ == "__main__":
     import uvicorn
-    logger.info("Starting Ripple Engine on http://0.0.0.0:8000")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", "8000"))
+    logger.info(f"Starting Ripple Engine on http://0.0.0.0:{port}")
+    uvicorn.run(app, host="0.0.0.0", port=port)
