@@ -10,14 +10,13 @@
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #F7F7F5; /* Muted drafting-paper off-white */
+            background-color: #F7F7F5; 
             color: #111827; 
             overflow-x: hidden; 
         }
         
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Blueprint grid instead of soft dots */
         .blueprint-grid {
             background-size: 50px 50px;
             background-image: 
@@ -25,7 +24,6 @@
                 linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
         }
 
-        /* Hard shadows instead of soft blurred shadows */
         .brutalist-shadow {
             box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.9);
             transition: all 0.2s ease;
@@ -38,76 +36,76 @@
 </head>
 <body class="relative min-h-screen flex flex-col blueprint-grid">
 
-    <nav class="relative z-10 flex justify-between items-center px-8 py-5 border-b border-gray-300 bg-[#F7F7F5]">
+    <nav class="relative z-10 flex flex-col sm:flex-row justify-between items-center px-4 md:px-8 py-5 border-b border-gray-300 bg-[#F7F7F5] gap-4 sm:gap-0">
         <div class="flex items-center gap-3">
             <div class="w-4 h-4 bg-[#1A362D]"></div>
-            <span class="font-bold text-lg tracking-tight uppercase">Ripple_Engine</span>
+            <span class="font-bold text-lg tracking-tight uppercase text-center sm:text-left">Ripple_Engine</span>
         </div>
         
-        <div class="flex gap-8 items-center">
-            <a href="#architecture" class="text-xs font-mono font-medium text-gray-500 hover:text-black uppercase tracking-wider">Architecture</a>
-            <a href="dashboard.html" class="bg-black text-white px-6 py-2.5 text-xs font-mono font-bold uppercase tracking-wider brutalist-shadow">
+        <div class="flex gap-4 md:gap-8 items-center flex-wrap justify-center">
+            <a href="#architecture" class="text-[10px] md:text-xs font-mono font-medium text-gray-500 hover:text-black uppercase tracking-wider">Architecture</a>
+            <a href="dashboard.html" class="bg-black text-white px-4 md:px-6 py-2 md:py-2.5 text-[10px] md:text-xs font-mono font-bold uppercase tracking-wider brutalist-shadow text-center">
                 Deploy Dashboard
             </a>
         </div>
     </nav>
 
-    <main class="relative z-10 flex-1 flex flex-col pt-24 pb-20 px-8 max-w-7xl mx-auto w-full">
+    <main class="relative z-10 flex-1 flex flex-col pt-12 md:pt-24 pb-12 md:pb-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
         
-        <div class="flex items-center gap-3 mb-10 font-mono text-xs text-gray-500 uppercase tracking-widest border-l-2 border-[#1A362D] pl-3">
+        <div class="flex items-center gap-3 mb-6 md:mb-10 font-mono text-[10px] md:text-xs text-gray-500 uppercase tracking-widest border-l-2 border-[#1A362D] pl-3">
             <span class="w-1.5 h-1.5 bg-green-500"></span>
             System Status: V1 Beta Active
         </div>
         
-        <h1 class="text-6xl md:text-[5.5rem] font-extrabold tracking-tighter leading-[0.95] max-w-4xl text-black">
-            Predict the city <br> before pouring <br> the concrete.
+        <h1 class="text-4xl sm:text-6xl md:text-[5.5rem] font-extrabold tracking-tighter leading-[1] md:leading-[0.95] max-w-4xl text-black">
+            Predict the city <br class="hidden sm:block"> before pouring <br class="hidden sm:block"> the concrete.
         </h1>
         
-        <p class="mt-10 text-lg text-gray-600 max-w-xl leading-relaxed font-medium">
+        <p class="mt-6 md:mt-10 text-base md:text-lg text-gray-600 max-w-xl leading-relaxed font-medium">
             An NLP-driven digital twin. We run 10,000 stochastic permutations on your urban proposals to map traffic, flood, and economic impact before you break ground.
         </p>
         
-        <div class="mt-12 flex gap-4">
-            <a href="dashboard.html" class="bg-[#1A362D] text-white px-8 py-4 text-sm font-bold brutalist-shadow flex items-center gap-3">
+        <div class="mt-8 md:mt-12 flex gap-4">
+            <a href="dashboard.html" class="bg-[#1A362D] text-white px-6 md:px-8 py-3 md:py-4 text-xs md:text-sm font-bold brutalist-shadow flex items-center gap-3">
                 Initialize Simulation
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </a>
         </div>
 
-        <div class="mt-24 border-t-2 border-l-2 border-black bg-white p-2 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative max-w-5xl">
+        <div class="mt-16 md:mt-24 border-t-2 border-l-2 border-black bg-white p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative max-w-5xl w-full">
             <div class="border-b-2 border-black pb-2 mb-2 flex justify-between items-center px-2">
                 <div class="flex gap-1.5">
-                    <div class="w-3 h-3 bg-gray-300 rounded-full border border-black"></div>
-                    <div class="w-3 h-3 bg-gray-300 rounded-full border border-black"></div>
+                    <div class="w-2 md:w-3 h-2 md:h-3 bg-gray-300 rounded-full border border-black"></div>
+                    <div class="w-2 md:w-3 h-2 md:h-3 bg-gray-300 rounded-full border border-black"></div>
                 </div>
-                <div class="text-[10px] font-mono text-gray-400">engine_telemetry_v1.0</div>
+                <div class="text-[8px] md:text-[10px] font-mono text-gray-400">engine_telemetry_v1.0</div>
             </div>
             
-            <div class="grid md:grid-cols-3 gap-0 border-2 border-black bg-[#F8F8F6]">
-                <div class="col-span-2 border-r-2 border-black relative grayscale hover:grayscale-0 transition-all duration-500">
-                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop" class="w-full h-80 object-cover opacity-90 mix-blend-multiply">
-                    <div class="absolute bottom-4 left-4 bg-black text-white text-[10px] font-mono px-2 py-1">TARGET: LUCKNOW, UP</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border-2 border-black bg-[#F8F8F6]">
+                <div class="col-span-1 md:col-span-2 border-b-2 md:border-b-0 md:border-r-2 border-black relative grayscale hover:grayscale-0 transition-all duration-500">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop" class="w-full h-48 md:h-80 object-cover opacity-90 mix-blend-multiply">
+                    <div class="absolute bottom-2 md:bottom-4 left-2 md:left-4 bg-black text-white text-[8px] md:text-[10px] font-mono px-2 py-1">TARGET: LUCKNOW, UP</div>
                 </div>
-                <div class="p-6 flex flex-col justify-between">
+                <div class="p-4 md:p-6 flex flex-col justify-between">
                     <div>
-                        <div class="text-[10px] font-mono text-gray-500 mb-4 border-b border-gray-300 pb-2">LATEST EXECUTION</div>
-                        <div class="font-bold text-sm mb-1">Underground Pipeline</div>
-                        <div class="text-xs text-gray-500 mb-6">Aminabad District</div>
+                        <div class="text-[8px] md:text-[10px] font-mono text-gray-500 mb-2 md:mb-4 border-b border-gray-300 pb-2">LATEST EXECUTION</div>
+                        <div class="font-bold text-xs md:text-sm mb-1">Underground Pipeline</div>
+                        <div class="text-[10px] md:text-xs text-gray-500 mb-4 md:mb-6">Aminabad District</div>
                         
-                        <div class="space-y-4">
-                            <div>
-                                <div class="text-[9px] font-mono text-gray-400">FLOOD RUNOFF</div>
+                        <div class="space-y-2 md:space-y-4">
+                            <div class="flex md:block justify-between items-center">
+                                <div class="text-[8px] md:text-[9px] font-mono text-gray-400">FLOOD RUNOFF</div>
                                 <div class="font-mono text-emerald-600 font-bold">-65%</div>
                             </div>
-                            <div>
-                                <div class="text-[9px] font-mono text-gray-400">TRAFFIC DELAY</div>
+                            <div class="flex md:block justify-between items-center">
+                                <div class="text-[8px] md:text-[9px] font-mono text-gray-400">TRAFFIC DELAY</div>
                                 <div class="font-mono text-red-500 font-bold">+15%</div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-300">
-                        <div class="text-[9px] font-mono text-gray-400">LLM ROUTING</div>
-                        <div class="text-xs font-bold mt-1">Utility_Underground</div>
+                        <div class="text-[8px] md:text-[9px] font-mono text-gray-400">LLM ROUTING</div>
+                        <div class="text-[10px] md:text-xs font-bold mt-1">Utility_Underground</div>
                     </div>
                 </div>
             </div>
@@ -115,39 +113,38 @@
     </main>
 
     <section id="architecture" class="relative z-10 border-t-2 border-black bg-white">
-        <div class="max-w-7xl mx-auto px-8 py-24">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
             
-            <h2 class="text-4xl font-extrabold text-black tracking-tight mb-16 max-w-lg">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-black tracking-tight mb-10 md:mb-16 max-w-lg">
                 Engineered for strict statistical accuracy.
             </h2>
             
-            <div class="grid md:grid-cols-12 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                 
                 <div class="col-span-12 md:col-span-8 border-2 border-black p-8 bg-[#F7F7F5]">
                     <div class="text-xs font-mono text-gray-400 mb-6">[ 01 ]</div>
-                    <h3 class="text-xl font-bold text-black mb-3">Gemini 2.5 Semantic Routing</h3>
+                    <h3 class="text-xl font-bold text-black mb-3">Monte Carlo Core</h3>
                     <p class="text-sm text-gray-600 leading-relaxed max-w-xl">
-                        Traditional planning tools rely on rigid dropdowns. Our pipeline accepts natural language proposals. The LLM extracts intent, determines the infrastructure category, and instantly wires the correct mathematical coefficients to the backend.
+                        10,000 stochastic permutations run in under 400ms to calculate 95th-percentile worst-case scenarios for traffic and environmental loads
                     </p>
                 </div>
 
                 <div class="col-span-12 md:col-span-4 border-2 border-black p-8 bg-[#1A362D] text-white">
                     <div class="text-xs font-mono text-gray-400 mb-6">[ 02 ]</div>
-                    <h3 class="text-xl font-bold mb-3">Monte Carlo Core</h3>
+                    <h3 class="text-xl font-bold mb-3">Gemini 2.5 Semantic Routing. </h3>
                     <p class="text-sm text-gray-300 leading-relaxed">
-                        10,000 stochastic permutations run in under 400ms to calculate 95th-percentile worst-case scenarios for traffic and environmental loads.
-                    </p>
+                        Traditional planning tools rely on rigid dropdowns. Our pipeline accepts natural language proposals. The LLM extracts intent, determines the infrastructure category, and instantly wires the correct mathematical coefficients to the backend. </p>
                 </div>
 
-                <div class="col-span-12 md:col-span-12 border-2 border-black p-8 bg-black text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="col-span-1 md:col-span-12 border-2 border-black p-6 md:p-8 bg-black text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <div class="text-xs font-mono text-gray-500 mb-2">[ 03 ]</div>
-                        <h3 class="text-xl font-bold mb-2">Live Weather & AQI Telemetry</h3>
-                        <p class="text-sm text-gray-400 max-w-2xl">
+                        <div class="text-[10px] md:text-xs font-mono text-gray-500 mb-2">[ 03 ]</div>
+                        <h3 class="text-lg md:text-xl font-bold mb-2">Live Weather & AQI Telemetry</h3>
+                        <p class="text-xs md:text-sm text-gray-400 max-w-2xl">
                             The engine isn't static. It pulls live regional weather and air quality APIs to dynamically handicap the mathematical models in real-time.
                         </p>
                     </div>
-                    <a href="dashboard.html" class="bg-white text-black px-6 py-3 text-xs font-mono font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors shrink-0">
+                    <a href="dashboard.html" class="bg-white text-black px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-xs font-mono font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors w-full md:w-auto text-center">
                         View Telemetry
                     </a>
                 </div>
@@ -156,7 +153,7 @@
         </div>
     </section>
 
-    <footer class="border-t-2 border-black bg-[#F7F7F5] py-8 px-8 text-xs font-mono text-gray-500 flex justify-between uppercase tracking-wider">
+    <footer class="border-t-2 border-black bg-[#F7F7F5] py-6 px-4 md:px-8 text-[10px] md:text-xs font-mono text-gray-500 flex flex-col md:flex-row justify-between items-center gap-2 uppercase tracking-wider">
         <div>Ripple Engine / Hackathon V1</div>
         <div>System Status: Online</div>
     </footer>
