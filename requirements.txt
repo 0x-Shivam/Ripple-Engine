@@ -5,6 +5,7 @@ python-dotenv
 networkx
 numpy 
 dotenv
+google-generativeai
 ## to insall all of these 
 
 # pip install -r requirements.txt
