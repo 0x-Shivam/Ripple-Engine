@@ -33,7 +33,7 @@ def fetch_weather(city_name="Lucknow"):
         res_json = response.json()
         
         data["precip_mm"] = float(res_json["current"].get("precip_mm", 0.0))
-        data["temp_c"] = float(res_json["current"].get("temp_c", 30.0))
+        data["temp_c"] = float(res_json["current"].get("temp_c", 32.0))
         data["source"] = "live_weatherapi"
         
     except requests.exceptions.RequestException as e:

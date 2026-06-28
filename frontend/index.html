@@ -150,7 +150,7 @@
                 <div class="text-xs font-semibold text-gray-800 whitespace-nowrap">Explore future impact</div>
                 <div class="flex-1 relative">
                     <div id="yearTooltip" class="absolute -top-8 left-1/2 -translate-x-1/2 accent-green text-white text-[10px] font-bold px-2 py-1 rounded shadow">2035</div>
-                    <input type="range" id="timelineSlider" min="2025" max="2050" step="5" value="2035">
+                    <input type="range" id="timelineSlider" min="2025" max="2050" step="1" value="2035">
                     <div class="flex justify-between text-[9px] text-gray-500 font-semibold mt-1 px-1">
                         <span>2025</span><span>2030</span><span>2035</span><span>2040</span><span>2045</span><span>2050</span>
                     </div>
@@ -192,7 +192,7 @@
             
             <div class="h-40 bg-gray-50 rounded-2xl mb-6 relative border border-gray-100 flex items-center justify-center">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxwb2x5bGluZSBwb2ludHM9IjIwLDIwIDgwLDgwIiBzdHJva2U9IiNFMkU4RjAiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==')] opacity-50"></div>
-                <div class="w-16 h-16 accent-green rounded-full z-10 flex items-center justify-center text-white text-[10px] font-bold shadow-lg text-center leading-tight ring-4 ring-[#1A362D]/20 animate-pulse">Project<br>Node</div>
+                <div id="projectNode" class="w-16 h-16 accent-green rounded-full z-10 flex items-center justify-center text-white text-[10px] font-bold shadow-lg text-center leading-tight ring-4 ring-[#1A362D]/20 transition-all duration-300">Project<br>Node</div>
             </div>
 
             <div class="flex bg-gray-100 rounded-lg p-1 mb-6">
@@ -301,6 +301,7 @@
             // START LOADING ANIMATION
             rightMetricsList.classList.add('opacity-30', 'animate-pulse', 'pointer-events-none');
             bottomMetricsList.classList.add('opacity-30', 'animate-pulse', 'pointer-events-none');
+            document.getElementById('projectNode').classList.add('animate-pulse', 'ring-8');
     
                 const response = await fetch(`${API_URL}?zone=${parsed.zone}&intervention=${encodeURIComponent(rawText)}&year=${year}`);
                 const data = await response.json();
@@ -315,10 +316,11 @@
             }
         }
 
-        function renderUI(payload) {
+       function renderUI(payload) {
              // STOP LOADING ANIMATION
                 rightMetricsList.classList.remove('opacity-30', 'animate-pulse', 'pointer-events-none');
                 bottomMetricsList.classList.remove('opacity-30', 'animate-pulse', 'pointer-events-none');
+                document.getElementById('projectNode').classList.remove('animate-pulse', 'ring-8');
 
             const metrics = payload.metrics;
             rightMetricsList.innerHTML = '';

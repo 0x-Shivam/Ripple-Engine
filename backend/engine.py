@@ -1,6 +1,7 @@
 import networkx as nx
 import numpy as np
 import time
+from google import genai
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -43,7 +44,6 @@ class UrbanCascadeEngine:
             return "Neutral_Development"
             
         try:
-            # We use flash because we need this to process in <1 second for a snappy UI
             prompt = f"""
             You are a backend routing AI for a city planning simulation.
             Analyze this user proposal: "{raw_text}"
@@ -52,28 +52,21 @@ class UrbanCascadeEngine:
             - Commercial_Heavy (malls, towers, factories, commerce)
             - Transit_Hub (roads, metro, transport, vehicles)
             - Green_Ecology (parks, planting trees, environmental)
-            - - Utility_Underground (water pipes, sewers, electrical grids, internet, 5G towers, telecom)
+            - Utility_Underground (water pipes, sewers, electrical grids, internet, 5G towers, telecom)
             - Neutral_Development (if vague, unknown, or unrelated)
             
             Return ONLY the exact category name string. No markdown, no punctuation, no explanation.
             """
-
-            if hasattr(genai, "GenerativeModel"):
-                model = genai.GenerativeModel('gemini-2.5-flash')
-                response = model.generate_content(prompt)
-            elif hasattr(genai, "generate_text"):
-                response = genai.generate_text(model='gemini-1.5-flash', prompt=prompt)
-            else:
-                raise RuntimeError("Unsupported google.generativeai API version")
-
-            if hasattr(response, "text"):
-                result_key = response.text.strip()
-            elif hasattr(response, "content"):
-                result_key = response.content.strip()
-            else:
-                result_key = str(response).strip()
             
-            # Safety check: If Gemini hallucinates, fallback to Neutral safely
+            # The new v2 syntax for generating content
+            response = genai.generate_text(
+                model='gemini-2.5-flash',
+                prompt=prompt,
+            )
+            
+            result_key = getattr(response, "text", str(response)).strip()
+            
+            # Safety check
             if result_key in self.archetypes:
                 print(f" Gemini routed '{raw_text}' -> {result_key}")
                 return result_key
@@ -81,8 +74,9 @@ class UrbanCascadeEngine:
                 return "Neutral_Development"
                 
         except Exception as e:
-            print(f" Gemini API Error: {e}")
+            print(f"⚠️ Gemini API Error: {e}")
             return "Neutral_Development"
+        
 
     def run_monte_carlo(self, zone_name, intervention_name, live_weather, live_aqi, target_year=2035, iterations=10000):
         """Executes a 10,000-pass stochastic simulation using LLM routing and live telemetry."""
