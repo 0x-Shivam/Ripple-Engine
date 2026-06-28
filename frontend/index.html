@@ -3,403 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ripple Engine | Dashboard</title>
+    <title>Ripple Engine | Urban Intelligence</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #F4F4F0; color: #1E293B; overflow: hidden; }
-        .accent-green { background-color: #1A362D; }
-        .text-accent-green { color: #1A362D; }
-        .glass-panel { background:
-             rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.5); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
         
-        /* Custom Timeline Slider styling to match image */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #1A362D; cursor: pointer; margin-top: -6px; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #E2E8F0; border-radius: 2px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #F7F7F5; /* Muted drafting-paper off-white */
+            color: #111827; 
+            overflow-x: hidden; 
+        }
+        
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Blueprint grid instead of soft dots */
+        .blueprint-grid {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        }
+
+        /* Hard shadows instead of soft blurred shadows */
+        .brutalist-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.9);
+            transition: all 0.2s ease;
+        }
+        .brutalist-shadow:hover {
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.9);
+            transform: translate(2px, 2px);
+        }
     </style>
 </head>
-<body class="h-screen w-screen p-4 flex gap-4 text-sm">
+<body class="relative min-h-screen flex flex-col blueprint-grid">
 
-    <nav class="w-56 flex flex-col justify-between bg-[#F8F8F6] rounded-3xl p-5 shadow-sm border border-gray-200/50">
-        <div>
-            <div class="flex items-center gap-2 mb-10 px-2">
-                <svg class="w-6 h-6 text-accent-green" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-                <span class="font-bold text-lg text-gray-900 tracking-tight">Ripple Engine</span>
-            </div>
-
-            
-            <ul class="space-y-2">
-                <li><a href="#" class="flex items-center gap-3 accent-green text-white px-4 py-3 rounded-xl font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-
-                </path></svg> Dashboard</a></li>
-                <li><a href="#" class="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-3 rounded-xl font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4">
-
-                    </path>
-                </svg> Scenarios</a></li>
-                <li>
-                    <a href="#" class="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-3 rounded-xl font-medium">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7">
-
-                    </path>
-                    </svg> Map</a>
-                </li>
-                <li><a href="#" class="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-3 rounded-xl font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Insights</a></li>
-                <li><a href="#" class="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-3 rounded-xl font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg> Simulator</a></li>
-            </ul>
+    <nav class="relative z-10 flex justify-between items-center px-8 py-5 border-b border-gray-300 bg-[#F7F7F5]">
+        <div class="flex items-center gap-3">
+            <div class="w-4 h-4 bg-[#1A362D]"></div>
+            <span class="font-bold text-lg tracking-tight uppercase">Ripple_Engine</span>
         </div>
-
-        <div>
-            <div class="px-4 py-3 mb-2 flex items-center gap-3">
-                <span class="text-xl">🌤️</span>
-            <div>
-                <div id="sidebarTemp" class="font-bold text-gray-900">--°C</div>
-                    <div id="sidebarCity" class="text-xs text-gray-500">Lucknow</div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 px-4 py-2">
-                <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
-                    <img src="https://api.dicebear.com/7.x/initials/svg?seed=SY" alt="Sattyam"></div>
-                <div>
-                    <div class="font-bold text-gray-900 text-xs">Sattyam</div>
-                    <div class="text-[10px] text-gray-500 uppercase tracking-wide">Planner</div>
-                </div>
-            </div>
+        
+        <div class="flex gap-8 items-center">
+            <a href="#architecture" class="text-xs font-mono font-medium text-gray-500 hover:text-black uppercase tracking-wider">Architecture</a>
+            <a href="dashboard.html" class="bg-black text-white px-6 py-2.5 text-xs font-mono font-bold uppercase tracking-wider brutalist-shadow">
+                Deploy Dashboard
+            </a>
         </div>
     </nav>
 
-    <main class="flex-1 flex flex-col gap-4 min-w-0">
+    <main class="relative z-10 flex-1 flex flex-col pt-24 pb-20 px-8 max-w-7xl mx-auto w-full">
         
-        <header class="flex justify-between items-center bg-white/50 rounded-2xl px-2 py-1 border border-white/60 shadow-sm">
+        <div class="flex items-center gap-3 mb-10 font-mono text-xs text-gray-500 uppercase tracking-widest border-l-2 border-[#1A362D] pl-3">
+            <span class="w-1.5 h-1.5 bg-green-500"></span>
+            System Status: V1 Beta Active
+        </div>
+        
+        <h1 class="text-6xl md:text-[5.5rem] font-extrabold tracking-tighter leading-[0.95] max-w-4xl text-black">
+            Predict the city <br> before pouring <br> the concrete.
+        </h1>
+        
+        <p class="mt-10 text-lg text-gray-600 max-w-xl leading-relaxed font-medium">
+            An NLP-driven digital twin. We run 10,000 stochastic permutations on your urban proposals to map traffic, flood, and economic impact before you break ground.
+        </p>
+        
+        <div class="mt-12 flex gap-4">
+            <a href="dashboard.html" class="bg-[#1A362D] text-white px-8 py-4 text-sm font-bold brutalist-shadow flex items-center gap-3">
+                Initialize Simulation
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+        </div>
 
-            <button class="p-2 text-gray-500 hover:text-gray-900"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-
-                </path>
-            </svg>
-        </button>
+        <div class="mt-24 border-t-2 border-l-2 border-black bg-white p-2 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative max-w-5xl">
+            <div class="border-b-2 border-black pb-2 mb-2 flex justify-between items-center px-2">
+                <div class="flex gap-1.5">
+                    <div class="w-3 h-3 bg-gray-300 rounded-full border border-black"></div>
+                    <div class="w-3 h-3 bg-gray-300 rounded-full border border-black"></div>
+                </div>
+                <div class="text-[10px] font-mono text-gray-400">engine_telemetry_v1.0</div>
+            </div>
             
-
-            <div class="flex-1 max-w-xl relative ml-4">
-                <svg class="w-4 h-4 absolute left-4 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
-
-                    </path>
-                </svg>
-
-                <input
-                    type="text"
-                 id="aiSearchBox"
-             placeholder="Describe a project (e.g. 'Build a   Metro Hub in Gomti Nagar')..."
-             class="w-4/5 bg-white border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A362D]/20 shadow-sm">
-            </div>
-
-            <div class="flex items-center gap-6 pr-2">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-gray-500">City:</span>
-                    <select id="citySelect" class="bg-transparent font-semibold text-gray-900 text-sm focus:outline-none cursor-pointer">
-                        <option value="Lucknow">Lucknow</option>
-                        <option value="Delhi">Delhi (Locked)</option>
-                    </select>
-                    
-                    </div>
-                <button class="text-gray-400 hover:text-gray-900"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg></button>
-                <button onclick="document.getElementById('aiSearchBox').value = ''; document.getElementById('aiSearchBox').focus();" class="accent-green text-white px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1 shadow-md hover:opacity-90 transition-opacity">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> New Scenario
-                </button>
-            </div>
-        </header>
-
-        <div class="flex-1 relative rounded-[2rem] overflow-hidden shadow-sm bg-gray-900 border border-white/50">
-            <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity">
-            
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div class="w-48 h-48 border border-amber-500/30 rounded-full animate-ping absolute"></div>
-                <div class="w-96 h-96 border border-amber-500/20 rounded-full absolute"></div>
-                <div class="w-[36rem] h-[36rem] border border-amber-500/10 rounded-full absolute"></div>
-            </div>
-
-            <div class="absolute top-10 left-10">
-                <h2 class="text-4xl font-bold text-white leading-tight drop-shadow-md">See how every<br>decision shapes<br><span class="italic font-normal">tomorrow.</span></h2>
-                <p class="text-gray-300 mt-3 text-xs w-64 drop-shadow">Simulate. Predict. Prevent.<br>Build better cities for the future.</p>
-            </div>
-
-            <div class="absolute bottom-8 left-8 glass-panel rounded-2xl p-4 w-72 shadow-xl">
-                <div class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-2">Current Scenario</div>
-                <div class="flex items-center justify-between mb-4">
+            <div class="grid md:grid-cols-3 gap-0 border-2 border-black bg-[#F8F8F6]">
+                <div class="col-span-2 border-r-2 border-black relative grayscale hover:grayscale-0 transition-all duration-500">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop" class="w-full h-80 object-cover opacity-90 mix-blend-multiply">
+                    <div class="absolute bottom-4 left-4 bg-black text-white text-[10px] font-mono px-2 py-1">TARGET: LUCKNOW, UP</div>
+                </div>
+                <div class="p-6 flex flex-col justify-between">
                     <div>
-                        <div id="cardProject" class="font-bold text-gray-900 text-sm">Build Metro Hub</div>
-                        <div id="cardZone" class="text-xs text-gray-500">Greenfield District</div>
+                        <div class="text-[10px] font-mono text-gray-500 mb-4 border-b border-gray-300 pb-2">LATEST EXECUTION</div>
+                        <div class="font-bold text-sm mb-1">Underground Pipeline</div>
+                        <div class="text-xs text-gray-500 mb-6">Aminabad District</div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-[9px] font-mono text-gray-400">FLOOD RUNOFF</div>
+                                <div class="font-mono text-emerald-600 font-bold">-65%</div>
+                            </div>
+                            <div>
+                                <div class="text-[9px] font-mono text-gray-400">TRAFFIC DELAY</div>
+                                <div class="font-mono text-red-500 font-bold">+15%</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="w-10 h-10 bg-gray-200 rounded-lg overflow-hidden"><img src="https://images.unsplash.com/photo-1541888087612-88049f7e4dfb?w=100&h=100&fit=crop" class="w-full h-full object-cover"></div>
-                </div>
-                <div class="grid grid-cols-3 gap-2 mb-4 border-t border-gray-200/50 pt-3">
-                    <div><div class="text-[9px] text-gray-400">Investment</div><div id="cardInvest" class="text-xs font-semibold text-gray-800">₹ 250 Cr</div></div>
-                    <div><div class="text-[9px] text-gray-400">Timeline</div><div id="cardTime" class="text-xs font-semibold text-gray-800">24 Months</div></div>
-                    <div><div class="text-[9px] text-gray-400">Area</div><div id="cardArea" class="text-xs font-semibold text-gray-800">2.4 km²</div></div>
-                </div>
-                <button onclick="document.getElementById('aiSearchBox').value = ''; document.getElementById('aiSearchBox').focus();" class="accent-green text-white px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1 shadow-md hover:opacity-90 transition-opacity">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Run Simulation
-                </button>
-            </div>
-## slider 
-            <div class="absolute bottom-6 right-6 glass-panel rounded-full px-6 py-4 flex items-center gap-5 shadow-xl w-[26rem] z-20">
-                <div class="text-xs font-semibold text-gray-800 whitespace-nowrap">Explore future impact</div>
-                <div class="flex-1 relative">
-                    <div id="yearTooltip" class="absolute -top-8 left-1/2 -translate-x-1/2 accent-green text-white text-[10px] font-bold px-2 py-1 rounded shadow">2035</div>
-                    <input type="range" id="timelineSlider" min="2025" max="2050" step="1" value="2035">
-                    <div class="flex justify-between text-[9px] text-gray-500 font-semibold mt-1 px-1">
-                        <span>2025</span><span>2030</span><span>2035</span><span>2040</span><span>2045</span><span>2050</span>
+                    <div class="mt-4 pt-4 border-t border-gray-300">
+                        <div class="text-[9px] font-mono text-gray-400">LLM ROUTING</div>
+                        <div class="text-xs font-bold mt-1">Utility_Underground</div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200/50 flex gap-4 h-32 items-center overflow-x-auto overflow-y-hidden">
-            <div class="min-w-[120px]">
-                <h3 class="text-sm font-bold text-gray-900">Ripple Effects</h3>
-                <p class="text-[10px] text-gray-500 leading-tight mt-1">What happens because<br>of this decision</p>
-            </div>
-            
-            <div class="h-12 w-px bg-gray-200 mx-2"></div>
-
-            <div class="flex gap-6" id="bottomMetricsList">
-                </div>
-
-            <div class="ml-auto bg-gray-50 rounded-2xl p-3 border border-gray-100 min-w-[200px] flex gap-3 items-center">
-                <div class="p-2 bg-white rounded-full shadow-sm"><span class="text-lg">✨</span></div>
-                <div>
-                    <div class="text-xs font-bold text-gray-900 mb-0.5">AI Insight</div>
-                    <p id="bottomAiText" class="text-[9px] text-gray-500 leading-tight line-clamp-2">Running statistical Monte Carlo permutation to define structural trade-offs.</p>
-                </div>
-            </div>
-        </div>
-        <!-- Toast Popup Container -->
-        <div id="toastAlert" class="fixed top-20 right-1/2 translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl text-xs font-semibold transition-all duration-300 opacity-0         pointer-events-none z-50 flex items-center gap-2">
-        <span>🚧</span> <span id="toastMsg">Feature coming in V2!</span>
-</div>      
     </main>
 
-    <aside class="w-[22rem] bg-white rounded-3xl shadow-sm border border-gray-200/50 flex flex-col relative overflow-hidden">
-        <div class="p-5 pb-0">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-bold text-gray-900">Butterfly Effect</h3>
-                <button class="text-gray-400 hover:text-gray-900"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
-            </div>
+    <section id="architecture" class="relative z-10 border-t-2 border-black bg-white">
+        <div class="max-w-7xl mx-auto px-8 py-24">
             
-            <div class="h-40 bg-gray-50 rounded-2xl mb-6 relative border border-gray-100 flex items-center justify-center">
-                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxwb2x5bGluZSBwb2ludHM9IjIwLDIwIDgwLDgwIiBzdHJva2U9IiNFMkU4RjAiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==')] opacity-50"></div>
-                <div id="projectNode" class="w-16 h-16 accent-green rounded-full z-10 flex items-center justify-center text-white text-[10px] font-bold shadow-lg text-center leading-tight ring-4 ring-[#1A362D]/20 transition-all duration-300">Project<br>Node</div>
-            </div>
-
-            <div class="flex bg-gray-100 rounded-lg p-1 mb-6">
-                <button class="flex-1 bg-white text-xs font-bold text-gray-900 py-1.5 rounded shadow-sm">Overall Impact</button>
-                <button class="flex-1 text-xs font-medium text-gray-500 py-1.5">Impact Over Time</button>
-            </div>
-        </div>
-
-        <div class="flex-1 overflow-y-auto px-5 pb-5">
-            <ul id="rightMetricsList" class="space-y-4">
-                </ul>
-        </div>
-        
-        <div class="p-5 pt-0 mt-auto">
-            <button class="w-full accent-green text-white py-3 rounded-xl text-xs font-semibold flex justify-between items-center px-4 hover:opacity-90">
-                View Full Impact Report <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button>
-        </div>
-    </aside>
-
-    <script>
-        const API_URL = "http://127.0.0.1:8000/api/simulate";
-        
-        // UI Elements
-        const aiSearchBox = document.getElementById('aiSearchBox');
-        const timelineSlider = document.getElementById('timelineSlider');
-        const yearTooltip = document.getElementById('yearTooltip');
-        const rightMetricsList = document.getElementById('rightMetricsList');
-        const bottomMetricsList = document.getElementById('bottomMetricsList');
-        const cardProject = document.getElementById('cardProject');
-        const cardZone = document.getElementById('cardZone');
-
-        // Update timeline tooltip dynamically
-        timelineSlider.addEventListener('input', (e) => {
-            const val = e.target.value;
-            yearTooltip.innerText = val;
-            // Move tooltip math (approximate)
-            const percent = ((val - 2025) / 25) * 100;
-            yearTooltip.style.left = `calc(${percent}% + (${8 - percent * 0.15}px))`;
-        });
-        
-        timelineSlider.addEventListener('change', runSimulation);
-
-        // AI Text Parser: Extracts Zone & Project from free text
-        aiSearchBox.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') runSimulation();
-        });
-
-        function parseNLP(text) {
-            let zone = "Hazratganj"; // Default
-            let project = "Build_Shopping_Mall"; // Default
-            let displayProject = "Shopping Mall";
-            let displayZone = "Hazratganj District";
+            <h2 class="text-4xl font-extrabold text-black tracking-tight mb-16 max-w-lg">
+                Engineered for strict statistical accuracy.
+            </h2>
             
-            const low = text.toLowerCase();
-            
-            // Map Zone
-            if (low.includes("gomti") || low.includes("nagar")) { zone = "Gomti_Nagar"; displayZone = "Gomti Nagar"; }
-            else if (low.includes("aminabad")) { zone = "Aminabad"; displayZone = "Aminabad Market"; }
-
-            // Map Project
-            if (low.includes("park") || low.includes("garden") || low.includes("green")) { project = "Green_Linear_Park"; displayProject = "Botanical Park"; }
-            else if (low.includes("metro") || low.includes("transit") || low.includes("hub") || low.includes("station")) { project = "Build_Metro_Hub"; displayProject = "Metro Hub"; }
-
-            return { zone, project, displayZone, displayProject };
-        }
-
-        const iconMap = {
-            "Traffic_Flow": "",
-            "Air_Quality": "",
-            "Local_Revenue": "",
-            "Flood_Runoff": "",
-            "Emergency_Response": "",
-            "Property_Values": ""
-        };
-
-        async function runSimulation() {
-            // Check City lock
-            if (document.getElementById('citySelect').value !== "Lucknow") {
-                alert("Simulations outside Lucknow MVP are currently locked.");
-                document.getElementById('citySelect').value = "Lucknow";
-                return;
-            }
-
-            const rawText = aiSearchBox.value;
-            const parsed = parseNLP(rawText);
-            const year = timelineSlider.value;
-
-            // Update UI card based on parsing
-           
-            if (rawText) {
-                // Capitalize the first letter of their prompt
-                cardProject.innerText = rawText.charAt(0).toUpperCase() + rawText.slice(1);
+            <div class="grid md:grid-cols-12 gap-6">
                 
-                document.getElementById('cardInvest').innerText = `₹ ${Math.floor(Math.random() * 400) + 50} Cr`;
-                document.getElementById('cardTime').innerText = `${Math.floor(Math.random() * 30) + 6} Months`;
-                document.getElementById('cardArea').innerText = `${(Math.random() * 4 + 0.5).toFixed(1)} km²`;
-            } else {
-                cardProject.innerText = "Build Metro Hub";
-            }
-            
-            cardZone.innerText = parsed.displayZone;
-            try {
-                 document.getElementById('bottomAiText').innerText = "Calculating network impacts via Monte Carlo Engine...";
-    
-            // START LOADING ANIMATION
-            rightMetricsList.classList.add('opacity-30', 'animate-pulse', 'pointer-events-none');
-            bottomMetricsList.classList.add('opacity-30', 'animate-pulse', 'pointer-events-none');
-            document.getElementById('projectNode').classList.add('animate-pulse', 'ring-8');
-    
-                const response = await fetch(`${API_URL}?zone=${parsed.zone}&intervention=${encodeURIComponent(rawText)}&year=${year}`);
-                const data = await response.json();
-                
-                if(data.status === "success") {
-                    renderUI(data.payload);
-                    document.getElementById('sidebarTemp').innerText = data.metadata.live_conditions_used.ambient_temperature;
-                }
-            } catch (error) {
-                console.error("Backend Disconnected:", error);
-                document.getElementById('bottomAiText').innerText = "Simulation Engine Offline. Ensure FastAPI is running on port 8000.";
-            }
-        }
+                <div class="col-span-12 md:col-span-8 border-2 border-black p-8 bg-[#F7F7F5]">
+                    <div class="text-xs font-mono text-gray-400 mb-6">[ 01 ]</div>
+                    <h3 class="text-xl font-bold text-black mb-3">Gemini 2.5 Semantic Routing</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed max-w-xl">
+                        Traditional planning tools rely on rigid dropdowns. Our pipeline accepts natural language proposals. The LLM extracts intent, determines the infrastructure category, and instantly wires the correct mathematical coefficients to the backend.
+                    </p>
+                </div>
 
-       function renderUI(payload) {
-             // STOP LOADING ANIMATION
-                rightMetricsList.classList.remove('opacity-30', 'animate-pulse', 'pointer-events-none');
-                bottomMetricsList.classList.remove('opacity-30', 'animate-pulse', 'pointer-events-none');
-                document.getElementById('projectNode').classList.remove('animate-pulse', 'ring-8');
+                <div class="col-span-12 md:col-span-4 border-2 border-black p-8 bg-[#1A362D] text-white">
+                    <div class="text-xs font-mono text-gray-400 mb-6">[ 02 ]</div>
+                    <h3 class="text-xl font-bold mb-3">Monte Carlo Core</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        10,000 stochastic permutations run in under 400ms to calculate 95th-percentile worst-case scenarios for traffic and environmental loads.
+                    </p>
+                </div>
 
-            const metrics = payload.metrics;
-            rightMetricsList.innerHTML = '';
-                bottomMetricsList.innerHTML = '';
-
-            for (const [key, valStr] of Object.entries(metrics)) {
-                // Determine color logic (Positive vs Negative impact)
-                let isGood = true;
-                if (key === 'Traffic_Flow' || key === 'Flood_Runoff' || key === 'Emergency_Response') {
-                    isGood = !valStr.includes('+'); // Increase in traffic/flood is bad
-                } else {
-                    isGood = valStr.includes('+'); // Increase in revenue is good
-                }
-
-                const colorClass = isGood ? "text-emerald-500" : "text-rose-500";
-                const icon = iconMap[key] || "";
-                const cleanName = key.replace('_', ' ');
-
-                // 1. Render Right Sidebar List
-                rightMetricsList.innerHTML += `
-                    <li class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-                        <div class="flex items-center gap-3">
-                            <span class="text-lg opacity-80">${icon}</span>
-                            <span class="text-xs font-semibold text-gray-700">${cleanName}</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <span class="text-xs font-bold ${colorClass}">${valStr}</span>
-                            <svg class="w-8 h-3 text-gray-300" viewBox="0 0 20 8" fill="none" stroke="currentColor"><path d="M0 4c2 0 3-3 5-3s3 6 5 6 3-6 5-6 3 3 5 3" stroke-width="1.5"/></svg>
-                        </div>
-                    </li>
-                `;
-
-                // 2. Render Bottom Cards
-                bottomMetricsList.innerHTML += `
-                    <div class="flex flex-col justify-center min-w-[90px]">
-                        <div class="flex items-center gap-1.5 mb-1 text-gray-500">
-                            <span class="text-sm">${icon}</span>
-                            <span class="text-[10px] font-bold">${cleanName}</span>
-                        </div>
-                        <div class="text-sm font-black ${colorClass}">${valStr}</div>
-                        <div class="text-[8px] text-gray-400 mt-0.5 truncate w-24">vs. historical baseline</div>
+                <div class="col-span-12 md:col-span-12 border-2 border-black p-8 bg-black text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <div class="text-xs font-mono text-gray-500 mb-2">[ 03 ]</div>
+                        <h3 class="text-xl font-bold mb-2">Live Weather & AQI Telemetry</h3>
+                        <p class="text-sm text-gray-400 max-w-2xl">
+                            The engine isn't static. It pulls live regional weather and air quality APIs to dynamically handicap the mathematical models in real-time.
+                        </p>
                     </div>
-                `;
-            }
+                    <a href="dashboard.html" class="bg-white text-black px-6 py-3 text-xs font-mono font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors shrink-0">
+                        View Telemetry
+                    </a>
+                </div>
 
-            // Update AI Insight text with first mitigation strategy
-            const topMitigation = payload.mitigation_strategies[0] || "Structural integrity stable.";
-            document.getElementById('bottomAiText').innerText = topMitigation;
-        }
-        // Toast Notification Logic for Dead Buttons
-    function showToast(message) {
-    const toast = document.getElementById('toastAlert');
-    document.getElementById('toastMsg').innerText = message;
-    toast.classList.remove('opacity-0', 'pointer-events-none');
-    toast.classList.add('opacity-100');
-    setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0', 'pointer-events-none');
-    }, 2500);
-}
+            </div>
+        </div>
+    </section>
 
-// Attach Toast to all Dead Links/Tabs
-        document.querySelectorAll('a[href="#"]').forEach(link => {
-    link.addEventListener('click', (e) => { e.preventDefault(); showToast("Dashboard module locked for MVP."); });
-    });
-    document.querySelector('button:contains("Impact Over Time")')?.addEventListener('click', () => showToast("Time-series graphs coming in V2."));
-    document.querySelector('button:contains("View Full Impact Report")')?.addEventListener('click', () => showToast("Full PDF export locked for MVP."));
+    <footer class="border-t-2 border-black bg-[#F7F7F5] py-8 px-8 text-xs font-mono text-gray-500 flex justify-between uppercase tracking-wider">
+        <div>Ripple Engine / Hackathon V1</div>
+        <div>System Status: Online</div>
+    </footer>
 
-        // Run baseline simulation on page load
-        window.onload = runSimulation;
-    </script>
 </body>
 </html>
-
-
-
-
-    
-
-
-
-
