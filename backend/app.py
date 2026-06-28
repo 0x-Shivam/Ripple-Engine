@@ -4,25 +4,15 @@ import asyncio
 import logging
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"], 
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Ensure the backend/ directory is on the Python path for sibling imports
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 from dotenv import load_dotenv
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+
+# Ensure the backend/ directory is on the Python path for sibling imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from engine import UrbanCascadeEngine
 from data_sourcing import fetch_weather, fetch_aqi, fetch_demographics
@@ -38,35 +28,31 @@ logging.basicConfig(
 logger = logging.getLogger("ripple_engine")
 
 # ---------------------------------------------------------------------------
-# Configuration
+# Configuration & Initialization
 # ---------------------------------------------------------------------------
 load_dotenv()
+
+# 1. INITIALIZE THE APP EXACTLY ONCE
 app = FastAPI(title="Ripple Engine Core", version="1.0.0")
 
-# Rate limiter — protect Gemini credits and CPU from abuse
-limiter = Limiter(key_func=get_remote_address)
-app.state.limiter = limiter
-
-# CORS: allow local development origins (file://, localhost on common ports)
-# In production, set ALLOWED_ORIGINS to your actual domain.
-ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS",
-    "http://localhost:5500,http://127.0.0.1:5500,http://localhost:8000,http://127.0.0.1:8000,null,https://ripple-engine-production.up.railway.app:8080"
-).split(",")
+# 2. ADD THE WIDE-OPEN CORS MIDDLEWARE EXACTLY ONCE
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in ALLOWED_ORIGINS if o.strip()],
-    allow_credentials=False,
-    allow_methods=["GET", "POST"],
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Rate-limit exception handler
+# 3. Rate limiter
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
     return JSONResponse(
         status_code=429,
-        content={"status": "error", "detail": "Rate limit exceeded. Please wait before making another request."}
+        content={"status": "error", "detail": "Rate limit exceeded. Please wait."}
     )
 
 # ---------------------------------------------------------------------------
