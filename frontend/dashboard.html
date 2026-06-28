@@ -224,9 +224,11 @@
             || window.location.hostname === 'localhost'
             || window.location.hostname === '127.0.0.1'
             || window.location.hostname === '';
+            
         const API_BASE = isLocal
             ? 'http://127.0.0.1:8000'
-            : 'https://ripple-engine-production.up.railway.app:8080';
+            : 'https://ripple-engine-production.up.railway.app'; // 
+            
         const SIMULATE_URL = `${API_BASE}/api/simulate`;
 
         // ---- DOM references ----
