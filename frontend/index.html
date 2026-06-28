@@ -292,7 +292,7 @@
             rightMetricsList.classList.add('opacity-30', 'animate-pulse', 'pointer-events-none');
             bottomMetricsList.classList.add('opacity-30', 'animate-pulse', 'pointer-events-none');
     
-                const response = await fetch(`${API_URL}?zone=${parsed.zone}&intervention=${parsed.project}&year=${year}`);
+                const response = await fetch(`${API_URL}?zone=${parsed.zone}&intervention=${encodeURIComponent(rawText)}&year=${year}`);
                 const data = await response.json();
                 
                 if(data.status === "success") {

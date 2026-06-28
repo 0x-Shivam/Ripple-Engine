@@ -12,7 +12,7 @@ GEONAMES_USERNAME = os.getenv("GEONAMES_USERNAME")
 
 # hard time out (prevent ui feezing if 3rd party fails/error)
 
-REQUEST_TIMEOUT = 3.5
+REQUEST_TIMEOUT = 4.0
 
 def fetch_weather(city_name="Lucknow"):
     """

@@ -10,7 +10,9 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+    configure_fn = getattr(genai, "configure", None)
+    if callable(configure_fn):
+        configure_fn(api_key=GEMINI_API_KEY)
 
 class UrbanCascadeEngine:
     def __init__(self):
@@ -57,7 +59,7 @@ class UrbanCascadeEngine:
             """
 
             if hasattr(genai, "GenerativeModel"):
-                model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                model = genai.GenerativeModel('gemini-2.5-flash')
                 response = model.generate_content(prompt)
             elif hasattr(genai, "generate_text"):
                 response = genai.generate_text(model='gemini-1.5-flash', prompt=prompt)
