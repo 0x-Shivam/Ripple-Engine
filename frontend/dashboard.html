@@ -84,8 +84,13 @@
                 <div class="flex items-center gap-1 sm:gap-2">
                     <span class="text-xs text-gray-500 hidden sm:inline">City:</span>
                     <select id="citySelect" aria-label="Select city" class="bg-transparent font-semibold text-gray-900 text-xs sm:text-sm focus:outline-none cursor-pointer">
-                        <option value="Lucknow">Lucknow</option>
-                        <option value="Delhi" disabled>Delhi (Locked)</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <span class="text-xs text-gray-500 hidden sm:inline">Zone:</span>
+                    <select id="zoneSelect" aria-label="Select zone" class="bg-transparent font-semibold text-gray-900 text-xs sm:text-sm focus:outline-none cursor-pointer">
+                        <!-- Populated by JS -->
                     </select>
                 </div>
                 <button onclick="focusSearchBox()" aria-label="Create new scenario"
@@ -260,21 +265,57 @@
         });
 
         function focusSearchBox() {
-            aiSearchBox.value = '';
             aiSearchBox.focus();
         }
 
-        // ---- NLP: Zone parser (covers ALL 4 zones) ----
-        function parseNLP(text) {
-            let zone = "Hazratganj";
-            let displayZone = "Hazratganj District";
-            const low = text.toLowerCase();
-            if (low.includes("gomti") || low.includes("nagar"))     { zone = "Gomti_Nagar"; displayZone = "Gomti Nagar"; }
-            else if (low.includes("aminabad"))                       { zone = "Aminabad";    displayZone = "Aminabad Market"; }
-            else if (low.includes("alambagh") || low.includes("alam")){ zone = "Alambagh";    displayZone = "Alambagh"; }
-            else if (low.includes("hazratganj") || low.includes("ganj")) { zone = "Hazratganj"; displayZone = "Hazratganj District"; }
-            return { zone, displayZone };
+        // ---- City & Zone dropdown population ----
+        async function populateCities() {
+            try {
+                const res = await fetch(`${API_BASE}/api/cities`);
+                if (!res.ok) throw new Error('Failed to load cities');
+                const data = await res.json();
+                const select = document.getElementById('citySelect');
+                select.innerHTML = '';
+                data.cities.forEach(city => {
+                    const opt = document.createElement('option');
+                    opt.value = city.key;
+                    opt.textContent = `${city.display_name}, ${city.state}`;
+                    if (city.key === 'lucknow') opt.selected = true;
+                    select.appendChild(opt);
+                });
+                await populateZones('lucknow');
+            } catch (e) {
+                console.error('Failed to load cities:', e);
+                showToast('Could not load city list. Is the backend running?');
+            }
         }
+
+        async function populateZones(cityKey) {
+            try {
+                const res = await fetch(`${API_BASE}/api/zones?city=${cityKey}`);
+                if (!res.ok) throw new Error('Failed to load zones');
+                const data = await res.json();
+                const select = document.getElementById('zoneSelect');
+                select.innerHTML = '';
+                data.zones.forEach(zone => {
+                    const opt = document.createElement('option');
+                    opt.value = zone.key;
+                    opt.textContent = zone.key.replace(/_/g, ' ');
+                    if (zone.key === data.zones[0].key) opt.selected = true;
+                    select.appendChild(opt);
+                });
+                // Update sidebar city name
+                document.getElementById('sidebarCity').innerText = data.display_name;
+            } catch (e) {
+                console.error('Failed to load zones:', e);
+                showToast('Could not load zones. Is the backend running?');
+            }
+        }
+
+        // City dropdown change → repopulate zones
+        document.getElementById('citySelect').addEventListener('change', (e) => {
+            populateZones(e.target.value);
+        });
 
         // ---- Metric display config ----
         const metricConfig = {
@@ -288,16 +329,11 @@
 
         // ---- Simulation runner ----
         async function runSimulation() {
-            // City lock check — Delhi is disabled in the dropdown, extra safety
-            if (document.getElementById('citySelect').value !== "Lucknow") {
-                showToast("Simulations outside Lucknow MVP are currently locked.");
-                document.getElementById('citySelect').value = "Lucknow";
-                return;
-            }
-
+            const city = document.getElementById('citySelect').value;
+            const zone = document.getElementById('zoneSelect').value;
             const rawText = aiSearchBox.value;
-            const parsed = parseNLP(rawText);
             const year = timelineSlider.value;
+            const zoneDisplay = zone.replace(/_/g, ' ');
 
             // Update card display
             if (rawText) {
@@ -313,7 +349,7 @@
                 document.getElementById('cardTime').innerHTML = `24 Months <span class="text-[8px] text-gray-400">(est.)</span>`;
                 document.getElementById('cardArea').innerHTML = `2.4 km² <span class="text-[8px] text-gray-400">(est.)</span>`;
             }
-            cardZone.innerText = parsed.displayZone;
+            cardZone.innerText = zoneDisplay;
 
             // Loading state — set pulse animation
             bottomAiText.innerText = "Calculating network impacts via Monte Carlo Engine...";
@@ -322,7 +358,7 @@
             projectNode.classList.add('animate-pulse', 'ring-8');
 
             try {
-                const response = await fetch(`${SIMULATE_URL}?zone=${parsed.zone}&intervention=${encodeURIComponent(rawText || "Build_Shopping_Mall")}&year=${year}`);
+                const response = await fetch(`${SIMULATE_URL}?city=${city}&zone=${zone}&intervention=${encodeURIComponent(rawText || "Build_Shopping_Mall")}&year=${year}`);
 
                 if (!response.ok) {
                     // Differentiated error handling
@@ -346,6 +382,9 @@
                     // Safely update sidebar temperature
                     const temp = data?.metadata?.live_conditions_used?.ambient_temperature;
                     document.getElementById('sidebarTemp').innerText = temp || '--°C';
+                    // Update sidebar city name
+                    const cityDisplay = data?.metadata?.selected_city || city;
+                    document.getElementById('sidebarCity').innerText = cityDisplay.charAt(0).toUpperCase() + cityDisplay.slice(1);
                 } else {
                     throw new Error(data.detail || "Simulation returned an unexpected status.");
                 }
@@ -371,6 +410,11 @@
             const metrics = payload.metrics;
             rightMetricsList.innerHTML = '';
             bottomMetricsList.innerHTML = '';
+
+            // Update the butterfly effect project node
+            if (payload.city) {
+                projectNode.innerHTML = `${payload.city.display_name}<br><span class="text-[6px] md:text-[7px] opacity-70">Node</span>`;
+            }
 
             for (const [key, valStr] of Object.entries(metrics)) {
                 const cfg = metricConfig[key] || { label: key.replace('_', ' '), trendGood: 'up' };
@@ -463,7 +507,10 @@
         });
 
         // ---- Kick off on load ----
-        window.onload = runSimulation;
+        window.onload = async () => {
+            await populateCities();
+            runSimulation();
+        };
     </script>
 </body>
 </html>

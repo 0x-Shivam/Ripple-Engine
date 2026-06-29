@@ -24,17 +24,115 @@ if GEMINI_API_KEY:
 else:
     logger.warning("No GEMINI_API_KEY found - LLM routing will use Neutral_Development fallback")
 
+# ---------------------------------------------------------------------------
+# Multi-City Database — population, density, and flood risk profiles for
+# 8 major Indian metropolitan areas. Coastal cities (Mumbai, Chennai, Kolkata)
+# have higher base_flood_risk; inland cities have lower values.
+# ---------------------------------------------------------------------------
+CITY_DATABASE = {
+    "lucknow": {
+        "display_name": "Lucknow",
+        "state": "Uttar Pradesh",
+        "lat": "26.8467",
+        "lon": "80.9462",
+        "zones": {
+            "Gomti_Nagar":  {"population": 450000, "density_km2": 4200,  "base_flood_risk": 0.3},
+            "Hazratganj":   {"population": 210000, "density_km2": 11500, "base_flood_risk": 0.5},
+            "Aminabad":     {"population": 320000, "density_km2": 18000, "base_flood_risk": 0.7},
+            "Alambagh":     {"population": 280000, "density_km2": 8500,  "base_flood_risk": 0.4},
+        }
+    },
+    "delhi": {
+        "display_name": "Delhi",
+        "state": "Delhi NCR",
+        "lat": "28.6139",
+        "lon": "77.2090",
+        "zones": {
+            "Connaught_Place": {"population": 180000, "density_km2": 12000, "base_flood_risk": 0.3},
+            "Chandni_Chowk":   {"population": 230000, "density_km2": 20000, "base_flood_risk": 0.5},
+            "Dwarka":          {"population": 1100000,"density_km2": 9500,  "base_flood_risk": 0.2},
+            "Lajpat_Nagar":    {"population": 450000, "density_km2": 15000, "base_flood_risk": 0.4},
+        }
+    },
+    "mumbai": {
+        "display_name": "Mumbai",
+        "state": "Maharashtra",
+        "lat": "19.0760",
+        "lon": "72.8777",
+        "zones": {
+            "Bandra":  {"population": 350000, "density_km2": 22000, "base_flood_risk": 0.8},
+            "Andheri": {"population": 800000, "density_km2": 18000, "base_flood_risk": 0.6},
+            "Colaba":  {"population": 200000, "density_km2": 25000, "base_flood_risk": 0.9},
+            "Powai":   {"population": 350000, "density_km2": 12000, "base_flood_risk": 0.5},
+        }
+    },
+    "bangalore": {
+        "display_name": "Bangalore",
+        "state": "Karnataka",
+        "lat": "12.9716",
+        "lon": "77.5946",
+        "zones": {
+            "Whitefield":   {"population": 400000, "density_km2": 8000,  "base_flood_risk": 0.3},
+            "Koramangala":  {"population": 250000, "density_km2": 14000, "base_flood_risk": 0.4},
+            "Jayanagar":    {"population": 300000, "density_km2": 16000, "base_flood_risk": 0.3},
+            "Yelahanka":    {"population": 350000, "density_km2": 6000,  "base_flood_risk": 0.2},
+        }
+    },
+    "chennai": {
+        "display_name": "Chennai",
+        "state": "Tamil Nadu",
+        "lat": "13.0827",
+        "lon": "80.2707",
+        "zones": {
+            "T_Nagar":   {"population": 300000, "density_km2": 20000, "base_flood_risk": 0.7},
+            "Adyar":     {"population": 250000, "density_km2": 11000, "base_flood_risk": 0.8},
+            "Velachery": {"population": 400000, "density_km2": 13000, "base_flood_risk": 0.9},
+            "Tambaram":  {"population": 350000, "density_km2": 7000,  "base_flood_risk": 0.5},
+        }
+    },
+    "hyderabad": {
+        "display_name": "Hyderabad",
+        "state": "Telangana",
+        "lat": "17.3850",
+        "lon": "78.4867",
+        "zones": {
+            "HITECH_City":    {"population": 350000, "density_km2": 9000,  "base_flood_risk": 0.3},
+            "Banjara_Hills":  {"population": 200000, "density_km2": 8000,  "base_flood_risk": 0.2},
+            "Charminar":      {"population": 400000, "density_km2": 22000, "base_flood_risk": 0.5},
+            "Kukatpally":     {"population": 500000, "density_km2": 14000, "base_flood_risk": 0.4},
+        }
+    },
+    "kolkata": {
+        "display_name": "Kolkata",
+        "state": "West Bengal",
+        "lat": "22.5726",
+        "lon": "88.3639",
+        "zones": {
+            "Salt_Lake":  {"population": 300000, "density_km2": 10000, "base_flood_risk": 0.6},
+            "Park_Street": {"population": 150000, "density_km2": 18000, "base_flood_risk": 0.7},
+            "Howrah":     {"population": 600000, "density_km2": 16000, "base_flood_risk": 0.8},
+            "New_Town":   {"population": 250000, "density_km2": 6000,  "base_flood_risk": 0.4},
+        }
+    },
+    "pune": {
+        "display_name": "Pune",
+        "state": "Maharashtra",
+        "lat": "18.5204",
+        "lon": "73.8567",
+        "zones": {
+            "Kothrud":     {"population": 300000, "density_km2": 12000, "base_flood_risk": 0.3},
+            "Hinjewadi":   {"population": 200000, "density_km2": 5000,  "base_flood_risk": 0.2},
+            "Shivaji_Nagar": {"population": 350000, "density_km2": 16000, "base_flood_risk": 0.4},
+            "Viman_Nagar": {"population": 250000, "density_km2": 10000, "base_flood_risk": 0.3},
+        }
+    },
+}
+
+
 class UrbanCascadeEngine:
     def __init__(self):
         logger.info("Initializing Urban Cascade Monte Carlo Engine...")
-
-        # Real-World Demographic Baselines for Lucknow zones
-        self.zones = {
-            "Gomti_Nagar": {"population": 450000, "density_km2": 4200, "base_flood_risk": 0.3},
-            "Hazratganj": {"population": 210000, "density_km2": 11500, "base_flood_risk": 0.5},
-            "Aminabad": {"population": 320000, "density_km2": 18000, "base_flood_risk": 0.7},
-            "Alambagh": {"population": 280000, "density_km2": 8500, "base_flood_risk": 0.4}
-        }
+        self.city_db = CITY_DATABASE
 
         # Mathematical Archetypes — coefficient weights for each infrastructure category
         self.archetypes = {
@@ -51,6 +149,52 @@ class UrbanCascadeEngine:
             "emergency_response_worst": 2.0,
             "traffic_flow_worst": 0.25,
         }
+
+    # -------------------------------------------------------------------
+    # City / Zone helpers
+    # -------------------------------------------------------------------
+    def get_city_metadata(self, city_key):
+        """Return the city dict or raise ValueError."""
+        if city_key not in self.city_db:
+            raise ValueError(f"Unknown city '{city_key}'. Available: {', '.join(sorted(self.city_db.keys()))}")
+        return self.city_db[city_key]
+
+    def get_zone(self, city_key, zone_key):
+        """Return the zone dict or raise ValueError."""
+        city = self.get_city_metadata(city_key)
+        if zone_key not in city["zones"]:
+            raise ValueError(
+                f"Unknown zone '{zone_key}' for {city['display_name']}. "
+                f"Available: {', '.join(sorted(city['zones'].keys()))}"
+            )
+        return city["zones"][zone_key]
+
+    def list_cities(self):
+        """Return a summary list for populating the city dropdown."""
+        return [
+            {
+                "key": key,
+                "display_name": c["display_name"],
+                "state": c["state"],
+                "lat": c["lat"],
+                "lon": c["lon"],
+                "zone_count": len(c["zones"]),
+            }
+            for key, c in self.city_db.items()
+        ]
+
+    def list_zones(self, city_key):
+        """Return zone metadata for the given city."""
+        city = self.get_city_metadata(city_key)
+        return [
+            {
+                "key": zkey,
+                "population": z["population"],
+                "density_km2": z["density_km2"],
+                "base_flood_risk": z["base_flood_risk"],
+            }
+            for zkey, z in city["zones"].items()
+        ]
 
     def _parse_intent(self, raw_text):
         """Uses Gemini 2.5 Flash to semantically route the user's free text to a math model."""
@@ -99,12 +243,13 @@ Return ONLY the exact category name string. No markdown, no punctuation, no expl
             logger.error(f"Gemini API Error: {e}. Falling back to Neutral_Development.")
             return "Neutral_Development"
 
-    def run_monte_carlo(self, zone_name, intervention_name, live_weather, live_aqi,
+    def run_monte_carlo(self, city_name, zone_name, intervention_name, live_weather, live_aqi,
                          target_year=2035, iterations=10000, random_seed=None):
         """Executes a stochastic simulation using LLM routing and live telemetry.
 
         Args:
-            zone_name: Lucknow zone key (Gomti_Nagar, Hazratganj, Aminabad, Alambagh)
+            city_name: city key (e.g. 'lucknow', 'delhi', 'mumbai')
+            zone_name: zone key within the city (e.g. 'Gomti_Nagar', 'Connaught_Place')
             intervention_name: User's free-text project proposal
             live_weather: dict with 'precip_mm' and 'temp_c' keys
             live_aqi: dict with 'current_aqi' key
@@ -115,10 +260,8 @@ Return ONLY the exact category name string. No markdown, no punctuation, no expl
         start_time = time.perf_counter()
 
         # 1. Validate Inputs
-        if zone_name not in self.zones:
-            raise ValueError(f"Invalid Zone: '{zone_name}'. Valid zones: {list(self.zones.keys())}")
-
-        zone = self.zones[zone_name]
+        city = self.get_city_metadata(city_name)
+        zone = self.get_zone(city_name, zone_name)
 
         # 2. Let Gemini parse the user's raw text and pick the archetype
         matched_archetype_key = self._parse_intent(intervention_name)
@@ -171,7 +314,7 @@ Return ONLY the exact category name string. No markdown, no punctuation, no expl
         if results["Emergency_Response"]["worst"] > t["emergency_response_worst"]:
             mitigations.append(f"WARNING: Ambulance delays peak at +{results['Emergency_Response']['worst']:.1f} mins. Dedicate smart-transit lanes on arterial roads.")
         if results["Traffic_Flow"]["worst"] > t["traffic_flow_worst"]:
-            mitigations.append(f"Congestion warning. Subsidize public transit passes for commercial employees in {zone_name.replace('_', ' ')}.")
+            mitigations.append(f"Congestion warning. Subsidize public transit passes for commercial employees in {zone_name.replace('_', ' ')} ({city['display_name']}).")
 
         if not mitigations:
             mitigations.append("System structural integrity is stable. No severe mitigations required.")
@@ -190,6 +333,7 @@ Return ONLY the exact category name string. No markdown, no punctuation, no expl
             "metrics": formatted_metrics,
             "statistical_confidence": "95%",
             "mitigation_strategies": mitigations,
+            "city": {"key": city_name, "display_name": city["display_name"], "state": city["state"]},
             "engine_telemetry": {
                 "iterations_run": iterations,
                 "execution_time_ms": round(execution_time, 2),

@@ -14,7 +14,7 @@ from slowapi.errors import RateLimitExceeded
 # Ensure the backend/ directory is on the Python path for sibling imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from engine import UrbanCascadeEngine
+from engine import UrbanCascadeEngine, CITY_DATABASE
 from data_sourcing import fetch_weather, fetch_aqi, fetch_demographics
 
 # ---------------------------------------------------------------------------
@@ -38,7 +38,7 @@ app = FastAPI(title="Ripple Engine Core", version="1.0.0")
 # 2. ADD THE WIDE-OPEN CORS MIDDLEWARE EXACTLY ONCE
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,18 +60,17 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 # ---------------------------------------------------------------------------
 engine = UrbanCascadeEngine()
 
-# Target baseline parameters for the MVP
-TARGET_CITY = "Lucknow"
-CITY_LAT = "26.8467"
-CITY_LON = "80.9462"
-
 # ---------------------------------------------------------------------------
 # Pydantic Models
 # ---------------------------------------------------------------------------
-VALID_ZONES = {"Gomti_Nagar", "Hazratganj", "Aminabad", "Alambagh"}
+VALID_CITIES = set(CITY_DATABASE.keys())
 
 class SimulationRequest(BaseModel):
-    zone: str = Field(..., description="The Lucknow zone profile selected by the user")
+    city: str = Field(
+        default="lucknow",
+        description="City key (e.g. 'lucknow', 'delhi', 'mumbai')"
+    )
+    zone: str = Field(..., description="Zone key within the selected city")
     intervention: str = Field(
         ...,
         min_length=1,
@@ -85,11 +84,11 @@ class SimulationRequest(BaseModel):
         description="The timeline target horizon year"
     )
 
-    @field_validator('zone')
+    @field_validator('city')
     @classmethod
-    def validate_zone(cls, v):
-        if v not in VALID_ZONES:
-            raise ValueError(f"Invalid zone '{v}'. Must be one of: {', '.join(sorted(VALID_ZONES))}")
+    def validate_city(cls, v):
+        if v not in VALID_CITIES:
+            raise ValueError(f"Invalid city '{v}'. Must be one of: {', '.join(sorted(VALID_CITIES))}")
         return v
 
     @field_validator('intervention')
@@ -109,25 +108,63 @@ async def health_check():
         "status": "ok",
         "service": "Ripple Engine Core",
         "version": "1.0.0",
-        "city": TARGET_CITY
+        "supported_cities": sorted(VALID_CITIES)
     }
+
+
+@app.get("/api/cities")
+@limiter.limit("60/minute")
+async def list_cities(request: Request):
+    """Return all supported cities with metadata for the city dropdown."""
+    return {
+        "cities": engine.list_cities()
+    }
+
+
+@app.get("/api/zones")
+@limiter.limit("60/minute")
+async def list_zones(
+    request: Request,
+    city: str = Query("lucknow", description="City key (e.g. 'lucknow', 'delhi', 'mumbai')")
+):
+    """Return zones for a given city."""
+    try:
+        city_meta = engine.get_city_metadata(city)
+        return {
+            "city": city,
+            "display_name": city_meta["display_name"],
+            "zones": engine.list_zones(city)
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 @app.get("/api/demographics")
 @limiter.limit("10/minute")
-async def get_geonames_demographics(request: Request):
+async def get_geonames_demographics(
+    request: Request,
+    city: str = Query("lucknow", description="City key (e.g. 'lucknow', 'delhi', 'mumbai')")
+):
     """Pulls macroscopic city baseline parameters via GeoNames to anchor our system."""
-    data = fetch_demographics(TARGET_CITY)
+    try:
+        city_meta = engine.get_city_metadata(city)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    data = fetch_demographics(city_meta["display_name"])
     return {
         "city": data["city"],
         "population": data["population"],
         "source": data["source"]
     }
 
+
 @app.get("/api/simulate")
 @limiter.limit("30/minute")
 async def simulate_urban_cascade(
     request: Request,
-    zone: str = Query(..., description="The Lucknow zone profile"),
+    city: str = Query("lucknow", description="City key (e.g. 'lucknow', 'delhi', 'mumbai')"),
+    zone: str = Query(..., description="Zone key within the selected city"),
     intervention: str = Query(..., description="The structural project proposal"),
     year: int = Query(2035, description="The timeline target horizon year")
 ):
@@ -137,22 +174,30 @@ async def simulate_urban_cascade(
     """
     # 1. Validate with Pydantic
     try:
-        sim_req = SimulationRequest(zone=zone, intervention=intervention, year=year)
+        sim_req = SimulationRequest(city=city, zone=zone, intervention=intervention, year=year)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    # 2. Gather live baseline telemetry from external APIs (with caching)
-    weather_data = fetch_weather(TARGET_CITY)
-    aqi_data = fetch_aqi(CITY_LAT, CITY_LON)
+    # 2. Validate the zone exists within the selected city
+    try:
+        city_meta = engine.get_city_metadata(sim_req.city)
+        engine.get_zone(sim_req.city, sim_req.zone)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # 3. Gather live baseline telemetry from external APIs (with caching)
+    weather_data = fetch_weather(city_meta["display_name"])
+    aqi_data = fetch_aqi(city_meta["lat"], city_meta["lon"])
 
     # Adapt to the format the engine expects
     live_weather = {"precip_mm": weather_data["precip_mm"], "temp_c": weather_data["temp_c"]}
     live_aqi = {"current_aqi": aqi_data["current_aqi"]}
 
     try:
-        # 3. Fire the NumPy Monte Carlo simulation in a thread — don't block the event loop
+        # 4. Fire the NumPy Monte Carlo simulation in a thread — don't block the event loop
         simulation_output = await asyncio.to_thread(
             engine.run_monte_carlo,
+            city_name=sim_req.city,
             zone_name=sim_req.zone,
             intervention_name=sim_req.intervention,
             live_weather=live_weather,
@@ -160,10 +205,11 @@ async def simulate_urban_cascade(
             target_year=sim_req.year
         )
 
-        # 4. Compile response bundle
+        # 5. Compile response bundle
         return {
             "status": "success",
             "metadata": {
+                "selected_city": sim_req.city,
                 "selected_zone": sim_req.zone,
                 "proposed_intervention": sim_req.intervention,
                 "target_year": sim_req.year,
