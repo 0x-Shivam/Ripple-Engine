@@ -312,9 +312,24 @@
             }
         }
 
-        // City dropdown change → repopulate zones
+        // ---- Sidebar weather ----
+        async function updateSidebarWeather(cityKey) {
+            try {
+                const res = await fetch(`${API_BASE}/api/weather?city=${cityKey}`);
+                if (!res.ok) throw new Error('Failed to fetch weather');
+                const data = await res.json();
+                document.getElementById('sidebarTemp').innerText = `${data.temp_c}°C`;
+                document.getElementById('sidebarCity').innerText = data.display_name;
+            } catch (e) {
+                console.error('Failed to fetch weather:', e);
+                document.getElementById('sidebarTemp').innerText = '--°C';
+            }
+        }
+
+        // City dropdown change → repopulate zones + refresh weather
         document.getElementById('citySelect').addEventListener('change', (e) => {
             populateZones(e.target.value);
+            updateSidebarWeather(e.target.value);
         });
 
         // ---- Metric display config ----
@@ -509,6 +524,7 @@
         // ---- Kick off on load ----
         window.onload = async () => {
             await populateCities();
+            updateSidebarWeather('lucknow');
             runSimulation();
         };
     </script>

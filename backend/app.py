@@ -139,6 +139,28 @@ async def list_zones(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.get("/api/weather")
+@limiter.limit("30/minute")
+async def get_city_weather(
+    request: Request,
+    city: str = Query("lucknow", description="City key (e.g. 'lucknow', 'delhi', 'mumbai')")
+):
+    """Return current temperature and precipitation for the sidebar widget."""
+    try:
+        city_meta = engine.get_city_metadata(city)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    weather_data = fetch_weather(city_meta["display_name"])
+    return {
+        "city": city,
+        "display_name": city_meta["display_name"],
+        "temp_c": weather_data["temp_c"],
+        "precip_mm": weather_data["precip_mm"],
+        "source": weather_data["source"]
+    }
+
+
 @app.get("/api/demographics")
 @limiter.limit("10/minute")
 async def get_geonames_demographics(
